@@ -1,0 +1,21 @@
+.taskList {
+  max-width: 570px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+  border-radius: 3px;
+  margin: 0 auto;
+  background-color: #fff;
+  overflow: hidden;
+  padding: 20px 55px 30px;
+
+  &Title {
+    font-size: 100px;
+    font-weight: 200;
+    color: #EADCDB;
+    text-align: center;
+  }
+  
+  &Text {
+    text-align: center;
+  }
+}
+
