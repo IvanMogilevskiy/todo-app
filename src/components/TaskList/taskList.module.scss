@@ -1,5 +1,5 @@
 .taskList {
-  max-width: 570px;
+  min-width: 700px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
   border-radius: 3px;
   margin: 0 auto;
@@ -10,7 +10,7 @@
   &Title {
     font-size: 100px;
     font-weight: 200;
-    color: #EADCDB;
+    color: #024871;
     text-align: center;
   }
   

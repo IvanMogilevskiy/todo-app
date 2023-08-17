@@ -25,6 +25,13 @@
     line-height: 1.2;
   }
 
+  &TitleCompleted {
+    padding: 5px;
+    line-height: 1.2;
+    text-decoration: line-through;
+    color: #c1c1c1;
+  }
+
   &EditTitle {
     font: 1rem/1em 'Roboto', sans-serif;
     border: none;

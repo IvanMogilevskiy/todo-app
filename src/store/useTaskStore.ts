@@ -1,10 +1,12 @@
-import { create, State, StateCreator } from 'zustand';
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import { generateId } from '../utils/utils.ts';
 
 interface Task {
   id: string;
   title: string;
   createdAt: number;
+  completed: boolean;
 }
 
 interface TaskStore {
@@ -12,45 +14,23 @@ interface TaskStore {
   addTask: (title: string) => void;
   updateTask: (id: string, title: string) => void;
   removeTask: (id: string) => void;
+  completeTask: (id: string) => void;
+  removeCompleted: () => void;
 }
 
-function isTaskStore(object: any): object is TaskStore {
-  return 'tasks' in object;
-}
-
-const localStorage = <T extends State>(config: StateCreator<T>):
-  StateCreator<T> => (set, get, api) => config((nextState, ...args) => {
-  if (isTaskStore(nextState)) {
-    window.localStorage.setItem('tasks', JSON.stringify(
-      nextState.tasks
-    ));
-  }
-  set(nextState, ...args);
-}, get, api);
-
-const getCurrentState = () => {
-  try {
-    const currentState = (JSON.parse(window.localStorage.getItem('tasks') || '[]')) as Task[];
-    return currentState;
-  } catch(err) {
-    window.localStorage.setItem('tasks', '[]');
-  }
-
-  return [];
-}
-
-export const useTaskStore = create<TaskStore>(localStorage((set, get) => ({
-  tasks: getCurrentState(),
+export const useTaskStore = create<TaskStore>()((persist((set, get) => ({
+  tasks: [],
   addTask: (title) => {
     const {tasks} = get();
     const newTask = {
       id: generateId(),
       title,
       createdAt: Date.now(),
+      completed: false,
     }
 
     set({
-      tasks: [newTask].concat(tasks),
+      tasks: [...tasks, newTask],
     })
   },
   updateTask: (id: string, title: string) => {
@@ -68,4 +48,22 @@ export const useTaskStore = create<TaskStore>(localStorage((set, get) => ({
       tasks: tasks.filter((task) => task.id !== id)
     });
   },
+  completeTask: (id: string) => {
+    const {tasks} = get();
+    set({
+      tasks: tasks.map(
+        (task) => task.id === id
+          ? { ...task, completed: !task.completed }
+          : task
+      )
+    });
+  },
+  removeCompleted: () => {
+    const {tasks} = get();
+    set({
+      tasks: tasks.filter((task) => !task.completed)
+    });
+  },
+}), {
+  name: 'tasks',
 })));

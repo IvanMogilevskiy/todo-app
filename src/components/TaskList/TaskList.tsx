@@ -3,19 +3,32 @@ import { useTaskStore } from '../../store/useTaskStore.ts';
 import InputAdd from '../InputAdd/InputAdd.tsx';
 import styles from './taskList.module.scss';
 import Task from '../Task/Task.tsx';
+import { useFilter } from '../../store/useFilter.ts';
+import ControlPanel from '../ControlPanel/ControlPanel.tsx';
 
 const App: React.FC = () => {
   const [
-    tasks,
     addTask,
     updateTask,
     removeTask,
   ] = useTaskStore(state => [
-    state.tasks,
     state.addTask,
     state.updateTask,
     state.removeTask,
+    state.completeTask,
   ]);
+
+  const filter = useFilter((state) => state.filter);
+  const tasks = useTaskStore((state) => {
+    switch (filter) {
+      case 'completed':
+        return state.tasks.filter((task) => task.completed);
+      case 'uncompleted':
+        return state.tasks.filter((task) => !task.completed);
+      default:
+        return state.tasks;
+    }
+  });
 
   return (
     <article className={styles.taskList}>
@@ -38,26 +51,15 @@ const App: React.FC = () => {
             key={task.id}
             id={task.id}
             title={task.title}
-            onComplete={removeTask}
             onEdited={updateTask}
             onRemove={removeTask}
+            completed={task.completed}
           />
         ))}
+        <ControlPanel />
       </section>
     </article>
   );
 };
 
 export default App;
-
-
-// function App() {
-//   return (
-//     <>
-//       <h1 className={'title'}>Tasks</h1>
-//       <div className={'task_list'}>
-//         <TaskList />
-//       </div>
-//     </>
-//   )
-// }

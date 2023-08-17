@@ -1,25 +1,24 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styles from './task.module.scss';
+import { useTaskStore } from '../../store/useTaskStore.ts';
 
 interface TaskProps {
   id: string;
   title: string;
-  onComplete: (id: string) => void;
   onEdited: (id: string, title: string) => void;
   onRemove: (id: string) => void;
+  completed: boolean;
 }
-
 
 const Task: React.FC<TaskProps> = (
   {
     id,
     title,
-    onComplete,
     onEdited,
-    onRemove
-
+    onRemove,
+    completed,
   }) => {
-  const [completed, setCompleted] = useState(false);
+  const completeTask = useTaskStore((state) => state.completeTask);
   const [isEdition, setIsEdition] = useState(false);
   const [value, setValue] = useState(title);
   const editionInputRef = useRef<HTMLInputElement>(null);
@@ -38,12 +37,8 @@ const Task: React.FC<TaskProps> = (
           type="checkbox"
           checked={completed}
           disabled={isEdition}
-          onChange={(e) => {
-            setCompleted(e.target.checked);
-
-            if (e.target.checked) {
-              onComplete(id);
-            }
+          onChange={() => {
+            completeTask(id)
           }}
         />
         {isEdition ? (
@@ -62,7 +57,7 @@ const Task: React.FC<TaskProps> = (
             }}
           />
         ) : (
-          <h3 className={styles.taskTitle}>{title}</h3>
+          <h3 className={completed ? styles.taskTitleCompleted : styles.taskTitle}>{title}</h3>
         )}
       </label>
       {isEdition ? (
@@ -91,8 +86,6 @@ const Task: React.FC<TaskProps> = (
           }
         }}
       />
-
-
     </div>
   );
 };

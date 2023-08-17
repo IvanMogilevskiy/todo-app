@@ -1,0 +1,29 @@
+.controlPanel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 7px 17px;
+  box-sizing: border-box;
+  background-color: #fff;
+  color: rgb(117, 117, 117);
+
+  button {
+    background: none;
+    border: none;
+    outline: none;
+    color: rgb(117, 117, 117);
+    margin-right: 2px;
+    cursor: pointer;
+    font-size: 15px;
+
+    &:hover {
+      color: #333333;
+    }
+  }
+
+  .buttonAct {
+    padding: 5px;
+    border: 1px solid #c9c9c9;
+    border-radius: 5%;
+  }
+}
